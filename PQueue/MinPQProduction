@@ -45,7 +45,8 @@ public class PriorityQueue
             }
 
             IHeapElement max = heap[0];
-            heap[0] = heap[count - 1]; heap[count - 1] = null;
+            heap[0] = heap[count - 1];
+            heap[count - 1] = null;
             count--;
             MinHeapIfY(0);
             return max;
@@ -53,31 +54,9 @@ public class PriorityQueue
 
         private void MinHeapIfY(int index)
         {
-            /*
-            int left = Left(index);
-            int right = Right(index);
-
-            int largest = index;
-
-            if (left < count && heap[left].Priority < heap[index].Priority) //??? left < count
-            {
-                largest = left;
-            }
-            if (right < count && heap[right].Priority < heap[largest].Priority) //??? right < count
-            {
-                largest = right;
-            }
-            if (largest != index)
-            {
-                Swap(largest, index);
-                MinHeapIfY(largest);
-            }
-            */
-
             int left;
             int right;
-            int largest = index;
-            //bool isDone = false;
+            int largest = index;            
 
             while (true)
             {
@@ -100,8 +79,7 @@ public class PriorityQueue
                     index = largest;
                 }
                 else
-                {
-                    //isDone = true;
+                {                    
                     return;
                 }
             }
@@ -115,8 +93,6 @@ public class PriorityQueue
                 GrowHeap();
 
             }
-
-            
 
             heap[index] = key;
             while (index > 0 && heap[Parent(index)].Priority > heap[index].Priority) // heap[Parent(index)].priority < heap[index].priority
@@ -135,13 +111,8 @@ public class PriorityQueue
         private void GrowHeap()
         {
             IHeapElement[] newHeap = new IHeapElement[heap.Length * 2 + 1];
-
             System.Array.Copy(heap, newHeap, heap.Length);
-
             heap = newHeap;
-            //Utility.DebugArray(Utility.DebugIHeapElement(heap));
-            //Debug.Log(newHeap.Length);
-
         }
 
         private void Swap(int a, int b)
