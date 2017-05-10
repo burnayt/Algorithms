@@ -1,0 +1,117 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace PQFinal
+{
+    public class PQueue : MonoBehaviour
+    {
+
+        private int count;
+        private Container[] heap;
+
+        private void Start()
+        {
+            heap = new Container[10];
+        }
+
+        public Container HeapExtractMax()
+        {
+            if( count <=0 )  // ??? count < 0
+            {
+                Debug.Log("Empty");
+                return null;
+            }
+
+            Container max = heap[0];
+            heap[0] = heap[count - 1]; heap[count - 1] = null;//Null last item
+            count--;
+            MaxHeapIfY(0);
+            return max;
+        }
+
+        private void MaxHeapIfY(int index)
+        {
+            int left = Left(index);
+            int right = Right(index);
+
+            int largest = index;
+
+            if (left < count && heap[left].priority > heap[index].priority) //??? left < count
+            {
+                largest = left;
+            }
+            if (right < count && heap[right].priority > heap[largest].priority) //??? right < count
+            {
+                largest = right;
+            }
+            if ( largest != index )
+            {
+                Swap(largest, index);
+                MaxHeapIfY( largest );
+            }
+        }
+
+        private void HeapIncreaseKey(int index, Container key)
+        {
+            if(count == heap.Length )
+            {
+                //Grow();
+                
+            }
+             
+            //BUBBLEUP
+            if ( heap[index] != null && key.priority < heap[index].priority) //ADD heap[index] != null
+            {
+                Debug.Log("Oops!");
+                return;
+            }
+
+            heap[index] = key;
+            while (index > 0 && heap[Parent(index)].priority < heap[index].priority ) 
+            {
+                Swap(index, Parent(index));
+                index = Parent(index);
+            }
+        }
+
+        public void MaxHeapInsert(Container key)
+        {
+            count++;
+            //heap[count-1] = -oo
+            HeapIncreaseKey(count - 1, key);
+        }
+
+        private void Swap(int a, int b)
+        {
+            Container temp = heap[a];
+            heap[a] = heap[b];
+            heap[b] = temp;
+        }
+
+        private int Left(int index)
+        {
+            return 2 * index + 1;
+        }
+
+        private int Right(int index)
+        {
+            return 2 * index + 2;
+        }
+
+        private int Parent(int index)
+        {
+            return (index - 1) / 2;
+        }
+
+    }
+
+    public class Container
+    {
+        public int priority;
+        public Container(int n)
+        {
+            priority = n;
+        }
+    }
+}
