@@ -1,0 +1,150 @@
+public class PriorityQueue
+    {
+        //MIN PRIORIIY QUEUE
+        private int count;
+        private IHeapElement[] heap;
+
+        public int Count
+        {
+            get
+            {
+                return count;
+            }
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                if( Count > 0 )
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+        private PriorityQueue()
+        {
+
+        }
+       
+        public PriorityQueue(int size)
+        {
+            heap = new IHeapElement[size];
+        }
+
+        public IHeapElement Dequeue()
+        {
+            if (count <= 0)
+            {
+                Debug.Log("Empty");
+                return null;
+            }
+
+            IHeapElement max = heap[0];
+            heap[0] = heap[count - 1]; heap[count - 1] = null;
+            count--;
+            MinHeapIfY(0);
+            return max;
+        }
+
+        private void MinHeapIfY(int index)
+        {
+            
+            int left = Left(index);
+            int right = Right(index);
+
+            int largest = index;
+
+            if (left < count && heap[left].Priority < heap[index].Priority) //??? left < count
+            {
+                largest = left;
+            }
+            if (right < count && heap[right].Priority < heap[largest].Priority) //??? right < count
+            {
+                largest = right;
+            }
+            if (largest != index)
+            {
+                Swap(largest, index);
+                MinHeapIfY(largest);
+            }
+            
+        }
+
+        private void HeapDecreaseKey(int index, IHeapElement key)
+        {
+            if (count > heap.Length) //if (count == heap.Length)
+            {
+                GrowHeap();
+
+            }
+
+            //BUBBLEUP
+            if (heap[index] != null && key.Priority < heap[index].Priority)
+            {
+                Debug.Log("Oops!");
+                return;
+            }
+
+            heap[index] = key;
+            while (index > 0 && heap[Parent(index)].Priority > heap[index].Priority) // heap[Parent(index)].priority < heap[index].priority
+            {
+                Swap(index, Parent(index));
+                index = Parent(index);
+            }
+        }
+
+        public void Enqueue(IHeapElement key)
+        {
+            count++;
+            //heap[count-1] = -oo
+            HeapDecreaseKey(count - 1, key);
+        }
+
+        private void GrowHeap()
+        {
+            IHeapElement[] newHeap = new IHeapElement[heap.Length * 2 + 1];
+
+            System.Array.Copy(heap, newHeap, heap.Length);
+
+            heap = newHeap;
+            //Utility.DebugArray(Utility.DebugIHeapElement(heap));
+            //Debug.Log(newHeap.Length);
+
+        }
+
+        private void Swap(int a, int b)
+        {
+            IHeapElement temp = heap[a];
+            heap[a] = heap[b];
+            heap[b] = temp;
+        }
+
+        private int Left(int index)
+        {
+            return 2 * index + 1;
+        }
+
+        private int Right(int index)
+        {
+            return 2 * index + 2;
+        }
+
+        private int Parent(int index)
+        {
+            return (index - 1) / 2;
+        }
+    }
+
+    public interface IHeapElement
+    {
+        int Priority
+        {
+            get;
+            set;
+        }
+    }
