@@ -116,12 +116,7 @@ public class PriorityQueue
 
             }
 
-            //BUBBLEUP
-            if (heap[index] != null && key.Priority < heap[index].Priority)
-            {
-                Debug.Log("Oops!");
-                return;
-            }
+            
 
             heap[index] = key;
             while (index > 0 && heap[Parent(index)].Priority > heap[index].Priority) // heap[Parent(index)].priority < heap[index].priority
