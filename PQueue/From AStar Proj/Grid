@@ -1,0 +1,36 @@
+public class Grid : IHeapElement<Grid>
+    {
+        public bool isWalkable;
+        public Vector3 position;
+        public int movementCost = 1;
+        public Grid parent;
+
+        public int xIndex;
+        public int yIndex;
+
+        public int g; // distance from startig node
+        public int h; // distance from end node
+
+        private int priority; // g+h
+        public Grid(Vector3 position, bool isWalkable, int xIndex, int yIndex)
+        {
+            this.position = position;
+            this.isWalkable = isWalkable;
+            this.xIndex = xIndex;
+            this.yIndex = yIndex;
+        }
+
+        public int Priority
+        {
+            get
+            {
+                priority = g + h;
+                return priority;
+            }
+
+            set
+            {
+                priority = value;
+            }
+        }
+    }
