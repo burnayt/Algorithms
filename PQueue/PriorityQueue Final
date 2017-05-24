@@ -1,0 +1,177 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+public class PriorityQueue<T> where T : IHeapElement<T>
+{
+    //MIN PRIORIIY QUEUE
+    private int count;
+    public T[] heap;
+
+    public int Count
+    {
+        get
+        {
+            return count;
+        }
+    }
+
+    public bool IsEmpty
+    {
+        get
+        {
+            if ( count > 0 )
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+    private PriorityQueue()
+    {
+        
+    }
+
+    public PriorityQueue(int size)
+    {
+        heap = new T[size];
+    }
+
+    public T Dequeue()
+    {
+        if (count <= 0)
+        {
+            Debug.Log("Empty");
+            return default(T);
+        }
+
+        T min = heap[0];
+        heap[0] = heap[count - 1];
+        heap[0].HeapIndex = 0;
+        heap[count - 1] = default(T);
+        count--;
+        MinHeapIfY(0);
+        return min;
+    }
+
+    private void MinHeapIfY(int index)
+    {
+        int left;
+        int right;
+        int least = index;
+
+        while (true)
+        {
+            left = Left(index);
+            right = Right(index);
+
+            if (left < count && heap[left].CompareTo (heap[index]) < 0)//heap[left].Priority < heap[index].Priority
+            {
+                least = left;
+            }
+
+            if (right < count && heap[right].CompareTo( heap[least] ) < 0)
+            {
+                least = right;
+            }
+
+            if (least != index)
+            {
+                Swap(least, index);
+                index = least;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+    }
+
+    private void HeapDecreaseKey(int index, T key)
+    {
+        if (count > heap.Length) //if (count == heap.Length)
+        {
+            GrowHeap();
+
+        }
+
+        heap[index] = key;
+        while (index > 0 && heap[Parent(index)].CompareTo(heap[index]) > 0) //heap[Parent(index)].Priority > heap[index].Priority
+        {
+            Swap(index, Parent(index));
+            index = Parent(index);
+        }
+    }
+
+    public void Enqueue(T key)
+    {
+        key.HeapIndex = count;
+        count++;
+        HeapDecreaseKey(count - 1, key);
+    }
+
+    public bool Contains(T element)
+    {
+        return Equals(heap[element.HeapIndex], element);
+    }
+
+    private void GrowHeap()
+    {
+        T[] newHeap = new T[heap.Length * 2 + 1];
+        System.Array.Copy(heap, newHeap, heap.Length);
+        heap = newHeap;
+    }
+
+    private void Swap(int a, int b)
+    {   
+        T temp = heap[a];
+        heap[a] = heap[b];
+        heap[b] = temp;
+        heap[a].HeapIndex = a;
+        heap[b].HeapIndex = b;
+    }
+
+    private int Left(int index)
+    {
+        return 2 * index + 1;
+    }
+
+    private int Right(int index)
+    {
+        return 2 * index + 2;
+    }
+
+    private int Parent(int index)
+    {
+        return (index - 1) / 2;
+    }
+
+    public int Length
+    {
+        get
+        {
+            return heap.Length;
+        }
+
+　
+    }
+}
+
+public interface IHeapElement<T>
+{
+    int HeapIndex
+    {
+        get;
+        set;
+    }
+    int Priority
+    {
+        get;
+        set;
+    }
+
+    int CompareTo(T element);
+}
